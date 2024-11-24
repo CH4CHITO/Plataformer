@@ -1,0 +1,95 @@
+[gd_scene load_steps=9 format=3 uid="uid://bdai5brrlgv4l"]
+
+[ext_resource type="PackedScene" uid="uid://bonq1hl1mqfyq" path="res://Scenes/Player.tscn" id="1_tisdg"]
+[ext_resource type="PackedScene" uid="uid://cvfxtv6am3bfs" path="res://Scenes/Platform.tscn" id="3_adq0b"]
+[ext_resource type="PackedScene" uid="uid://da5ru1hlr86ye" path="res://Scenes/Semiplatform.tscn" id="3_hf5gp"]
+[ext_resource type="Script" path="res://Scripts/Player/CharacterMovementStats.cs" id="4_2tsov"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_834c0"]
+size = Vector2(3904, 320)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hq6nt"]
+size = Vector2(128, 1344)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xjvp0"]
+size = Vector2(58.2528, 0.521079)
+
+[sub_resource type="Resource" id="Resource_2xcsy"]
+script = ExtResource("4_2tsov")
+RunningSpeed = 500.0
+RunningAcceleration = 2000.0
+RunningDeceleration = 1000.0
+JumpSpeed = -400.0
+InAirSpeed = 300.0
+InAirAcceleration = 1500.0
+dashSpeed = 1000.0
+dashDuration = 0.5
+canJump = true
+canAirJump = true
+canDash = true
+horizontalMoving = false
+
+[node name="Main" type="Node2D"]
+position = Vector2(1600, -512)
+
+[node name="Terrain" type="StaticBody2D" parent="."]
+z_index = 1
+collision_layer = 2
+collision_mask = 0
+
+[node name="Polygon2D" type="Polygon2D" parent="Terrain"]
+scale = Vector2(0.5, 1)
+color = Color(0, 1, 1, 1)
+polygon = PackedVector2Array(-2944, 192, -2944, 512, 960, 512, 960, 192)
+
+[node name="Polygon2D2" type="Polygon2D" parent="Terrain"]
+position = Vector2(-512, 0)
+color = Color(0, 1, 1, 1)
+polygon = PackedVector2Array(-960, 512, -1088, 512, -1088, -832, -960, -832)
+
+[node name="Polygon2D3" type="Polygon2D" parent="Terrain"]
+position = Vector2(1568, 0)
+color = Color(0, 1, 1, 1)
+polygon = PackedVector2Array(-960, 512, -1088, 512, -1088, -832, -960, -832)
+
+[node name="Polygon2D4" type="Polygon2D" parent="Terrain"]
+scale = Vector2(0.5, 1)
+color = Color(0, 1, 1, 1)
+polygon = PackedVector2Array(-2944, -832, -2944, -704, 960, -704, 960, -832)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Terrain"]
+position = Vector2(-496, 352)
+scale = Vector2(0.5, 1)
+shape = SubResource("RectangleShape2D_834c0")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Terrain"]
+position = Vector2(-1536, -160)
+shape = SubResource("RectangleShape2D_hq6nt")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Terrain"]
+position = Vector2(544, -160)
+shape = SubResource("RectangleShape2D_hq6nt")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="Terrain"]
+position = Vector2(-496, -768)
+scale = Vector2(33.5091, 245.644)
+shape = SubResource("RectangleShape2D_xjvp0")
+
+[node name="Platform" parent="Terrain" instance=ExtResource("3_adq0b")]
+position = Vector2(-752, -48)
+
+[node name="Platform2" parent="Terrain" instance=ExtResource("3_adq0b")]
+position = Vector2(-136, -48)
+
+[node name="Platform3" parent="Terrain" instance=ExtResource("3_adq0b")]
+position = Vector2(88, -104)
+
+[node name="Semiplatform" parent="Terrain" instance=ExtResource("3_hf5gp")]
+position = Vector2(-376, 32)
+
+[node name="Semiplatform2" parent="Terrain" instance=ExtResource("3_hf5gp")]
+position = Vector2(-1000, -544)
+
+[node name="Player" parent="." instance=ExtResource("1_tisdg")]
+position = Vector2(-1024, -600)
+movementStats = SubResource("Resource_2xcsy")

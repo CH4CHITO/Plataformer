@@ -1,0 +1,93 @@
+[gd_scene load_steps=12 format=3 uid="uid://bonq1hl1mqfyq"]
+
+[ext_resource type="Script" path="res://Scripts/Player/Player.cs" id="1_ampen"]
+[ext_resource type="Script" path="res://Scripts/Player/CharacterMovementStats.cs" id="2_owkuq"]
+[ext_resource type="PackedScene" uid="uid://bw1kt66fmloef" path="res://Scenes/StateMachine.tscn" id="3_wpt22"]
+[ext_resource type="Script" path="res://Scripts/Player/PlayerStateIdle.cs" id="4_3n87t"]
+[ext_resource type="Script" path="res://Scripts/Player/PlayerStateRunning.cs" id="5_m1m71"]
+[ext_resource type="Script" path="res://Scripts/Player/PlayerStateJumping.cs" id="6_1r64n"]
+[ext_resource type="Script" path="res://Scripts/Player/PlayerStateFalling.cs" id="7_yqw6d"]
+[ext_resource type="Script" path="res://Scripts/Player/PlayerStateDashing.cs" id="8_yur0v"]
+[ext_resource type="Script" path="res://Scripts/Player/PlayerStateCrouched.cs" id="9_kc2mw"]
+
+[sub_resource type="Resource" id="Resource_11mxe"]
+script = ExtResource("2_owkuq")
+RunningSpeed = 400.0
+RunningAcceleration = 1500.0
+RunningDeceleration = 10000.0
+JumpSpeed = -400.0
+InAirSpeed = 300.0
+InAirAcceleration = 1500.0
+dashSpeed = 5000.0
+dashDuration = 0.5
+canJump = true
+canAirJump = true
+canDash = true
+horizontalMoving = false
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sabc4"]
+size = Vector2(32, 64)
+
+[node name="Player" type="CharacterBody2D"]
+z_index = 2
+position = Vector2(-336, 112)
+collision_mask = 6
+script = ExtResource("1_ampen")
+movementStats = SubResource("Resource_11mxe")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_sabc4")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Timers" type="Node" parent="."]
+
+[node name="DashTimer" type="Timer" parent="Timers"]
+process_callback = 0
+wait_time = 5.0
+one_shot = true
+
+[node name="CoyoteTimer" type="Timer" parent="Timers"]
+process_callback = 0
+wait_time = 0.1
+one_shot = true
+
+[node name="Body" type="Polygon2D" parent="."]
+color = Color(0, 0, 0, 0)
+antialiased = true
+polygon = PackedVector2Array(-16, -32, 16, -32, 16, 32, -16, 32)
+
+[node name="Weapon" type="Node2D" parent="."]
+
+[node name="WeaponSprite" type="Polygon2D" parent="Weapon"]
+color = Color(0.666667, 0, 1, 1)
+offset = Vector2(4, 4)
+polygon = PackedVector2Array(-8, -32, 0, -32, 0, -0.0884666, 0, 8, -8, 8)
+
+[node name="ProjectileSpawner" type="Marker2D" parent="Weapon/WeaponSprite"]
+position = Vector2(0, -28)
+rotation = -1.5708
+
+[node name="StateMachine" parent="." node_paths=PackedStringArray("DefaultState") instance=ExtResource("3_wpt22")]
+DefaultState = NodePath("PlayerStateIdle")
+
+[node name="PlayerStateIdle" type="Node" parent="StateMachine"]
+script = ExtResource("4_3n87t")
+
+[node name="PlayerStateRunning" type="Node" parent="StateMachine"]
+script = ExtResource("5_m1m71")
+
+[node name="PlayerStateJumping" type="Node" parent="StateMachine"]
+script = ExtResource("6_1r64n")
+
+[node name="PlayerStateFalling" type="Node" parent="StateMachine"]
+script = ExtResource("7_yqw6d")
+
+[node name="PlayerStateDashing" type="Node" parent="StateMachine"]
+script = ExtResource("8_yur0v")
+
+[node name="PlayerStateCrouched" type="Node" parent="StateMachine"]
+script = ExtResource("9_kc2mw")
+
+[connection signal="timeout" from="Timers/DashTimer" to="." method="OnDashTimerTimeout"]
+[connection signal="timeout" from="Timers/CoyoteTimer" to="." method="OnCoyoteTimerTimeout"]
